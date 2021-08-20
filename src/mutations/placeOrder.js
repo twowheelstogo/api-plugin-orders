@@ -20,6 +20,20 @@ const inputSchema = new SimpleSchema({
 });
 
 /**
+ * @param {Context} context The application context
+ * @param {Order} order it is order 
+ * @returns {Number} odooIdBilling it is the Id That indetify the billing of an order
+ */
+async function createOdooBilling(context, order){
+  try {
+    return await context.mutations.getOdooInvoice(context, order);
+  } catch (error) {
+    Logger.error("createOrder: error creating billing", error.message);
+    return 0;
+  } 
+}
+
+/**
  * @summary Create all authorized payments for a potential order
  * @param {String} [accountId] The ID of the account placing the order
  * @param {Object} [billingAddress] Billing address for the order as a whole
@@ -235,6 +249,9 @@ export default async function placeOrder(context, input) {
     giftNote
   };
 
+  const idOdooBilling = await createOdooBilling(context, order);
+  order["idOdooBilling"] = idOdooBilling;
+
   if (fullToken) {
     const dbToken = { ...fullToken };
     // don't store the raw token in db, only the hash
@@ -279,7 +296,6 @@ export default async function placeOrder(context, input) {
   } else {
     order.customFields = customFieldsFromClient;
   }
-  console.log("validar aca el schema de order")
   // Validate and save
   OrderSchema.validate(order);
   await Orders.insertOne(order);
