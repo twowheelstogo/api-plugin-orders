@@ -29,7 +29,7 @@ async function createOdooBilling(context, order){
     return await context.mutations.getOdooInvoice(context, order);
   } catch (error) {
     Logger.error("createOrder: error creating billing", error.message);
-    return 0;
+    return {partner_id:-1, id:-1};
   } 
 }
 
@@ -249,9 +249,14 @@ export default async function placeOrder(context, input) {
     giftNote
   };
 
-  const idOdooBilling = await createOdooBilling(context, order);
-  order["idOdooBilling"] = idOdooBilling;
-
+  const odooObject = await createOdooBilling(context, order);
+  if(odooObject){
+    order["idOdooBilling"] = odooObject.id;
+    order["billing"]["partnerId"] = odooObject.partner_id;
+  }else{
+    order["idOdooBilling"] = -1;
+    order["billing"]["partnerId"] = -1;
+  }
   if (fullToken) {
     const dbToken = { ...fullToken };
     // don't store the raw token in db, only the hash

@@ -32,6 +32,10 @@ const withoutCodeCountries = ["AO", "AG", "AW", "BS", "BZ", "BJ", "BW",
   "isCf":{
     type: Boolean,
     optional: true
+  },
+  "partnerId":{
+    type: Number,
+    optional: true
   }
 });
 /**
@@ -1240,7 +1244,8 @@ export const Order = new SimpleSchema({
       nit:"C/F",
       name:"C/F",
       address:"C/F",
-      isCf: true
+      isCf: true,
+      partnerId: -1
     }
   },
   "giftNote":{
