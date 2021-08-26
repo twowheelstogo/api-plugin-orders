@@ -807,7 +807,8 @@ export const OrderItem = new SimpleSchema({
     type: History
   },
   "imageURLs":{
-    type:ImageSizes
+    type:ImageSizes,
+    optional: true
   },
   "optionTitle": {
     type: String,
