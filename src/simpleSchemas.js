@@ -11,23 +11,31 @@ const withoutCodeCountries = ["AO", "AG", "AW", "BS", "BZ", "BJ", "BW",
  * @name Billing
  * @memberof Schemas
  * @type {SimpleSchema}
- * @property {String} customerName optional
+ * @property {String} name optional
  * @property {String} nit optional
  * @property {String} address optional
+ * @property {Boolean} isCf optional
  */
  export const BillingDetails = new SimpleSchema({
-  customerName: {
+  "name": {
       type: String,
       optional: true
   },
-  nit:{
+  "nit":{
       type: String,
-      max: 9,
       optional: true
   },
-  address:{
+  "address":{
       type: String,
       optional:true
+  },
+  "isCf":{
+    type: Boolean,
+    optional: true
+  },
+  "partnerId":{
+    type: Number,
+    optional: true
   }
 });
 /**
@@ -824,6 +832,14 @@ export const OrderItem = new SimpleSchema({
     type: String,
     optional: true
   },
+  "odooProduct": {
+    type: Number,
+    optional: true
+  },
+  "categoryVariant": {
+    type: Number,
+    optional: true
+  },
   "productType": {
     label: "Product Type",
     type: String,
@@ -1118,6 +1134,7 @@ export const Payment = new SimpleSchema({
  * @property {Workflow} workflow optional
  * @property {BillingDetails} billing optional
  * @property {GiftNote} giftNote optional
+ * @property {Number} idOdooBilling optional
  */
 export const Order = new SimpleSchema({
   "_id": {
@@ -1226,13 +1243,20 @@ export const Order = new SimpleSchema({
     optional: true,
     defaultValue: {
       nit:"C/F",
-      customerName:"C/F",
-      address:"C/F"
+      name:"C/F",
+      address:"C/F",
+      isCf: true,
+      partnerId: -1
     }
   },
   "giftNote":{
     type:Gift,
     optional: true
+  },
+  "idOdooBilling":{
+    type: Number,
+    optional: true,
+    defaultValue: 0
   }
 });
 

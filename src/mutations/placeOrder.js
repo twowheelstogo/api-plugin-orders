@@ -6,7 +6,7 @@ import ReactionError from "@reactioncommerce/reaction-error";
 import getAnonymousAccessToken from "@reactioncommerce/api-utils/getAnonymousAccessToken.js";
 import buildOrderFulfillmentGroupFromInput from "../util/buildOrderFulfillmentGroupFromInput.js";
 import verifyPaymentsMatchOrderTotal from "../util/verifyPaymentsMatchOrderTotal.js";
-import { Order as OrderSchema, orderInputSchema, Payment as PaymentSchema, paymentInputSchema } from "../simpleSchemas.js";
+import { Order as OrderSchema, orderInputSchema, Payment as PaymentSchema, paymentInputSchema, BillingDetails, Gift } from "../simpleSchemas.js";
 
 const inputSchema = new SimpleSchema({
   "order": orderInputSchema,
@@ -14,8 +14,24 @@ const inputSchema = new SimpleSchema({
     type: Array,
     optional: true
   },
+  "billing": BillingDetails,
+  "giftNote": Gift,
   "payments.$": paymentInputSchema
 });
+
+/**
+ * @param {Context} context The application context
+ * @param {Order} order it is order 
+ * @returns {Number} odooIdBilling it is the Id That indetify the billing of an order
+ */
+async function createOdooBilling(context, order){
+  try {
+    return await context.mutations.getOdooInvoice(context, order);
+  } catch (error) {
+    Logger.error("createOrder: error creating billing", error.message);
+    return {partner_id:-1, id:-1};
+  } 
+}
 
 /**
  * @summary Create all authorized payments for a potential order
@@ -114,8 +130,7 @@ async function createPayments({
 export default async function placeOrder(context, input) {
   const cleanedInput = inputSchema.clean(input); // add default values and such
   inputSchema.validate(cleanedInput);
-
-  const { order: orderInput, payments: paymentsInput } = cleanedInput;
+  const { order: orderInput, payments: paymentsInput, billing, giftNote } = cleanedInput;
   const {
     billingAddress,
     cartId,
@@ -124,9 +139,7 @@ export default async function placeOrder(context, input) {
     email,
     fulfillmentGroups,
     ordererPreferredLanguage,
-    shopId,
-    billing,
-    giftNote
+    shopId
   } = orderInput;
   const { accountId, appEvents, collections, getFunctionsOfType, userId } = context;
   const { Orders, Cart } = collections;
@@ -236,6 +249,14 @@ export default async function placeOrder(context, input) {
     giftNote
   };
 
+  const odooObject = await createOdooBilling(context, order);
+  if(odooObject){
+    order["idOdooBilling"] = odooObject.id;
+    order["billing"]["partnerId"] = odooObject.partner_id;
+  }else{
+    order["idOdooBilling"] = -1;
+    order["billing"]["partnerId"] = -1;
+  }
   if (fullToken) {
     const dbToken = { ...fullToken };
     // don't store the raw token in db, only the hash
@@ -280,7 +301,6 @@ export default async function placeOrder(context, input) {
   } else {
     order.customFields = customFieldsFromClient;
   }
-
   // Validate and save
   OrderSchema.validate(order);
   await Orders.insertOne(order);

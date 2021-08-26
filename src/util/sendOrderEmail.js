@@ -21,6 +21,8 @@ export default async function sendOrderEmail(context, order, action) {
     const someData = await getDataForOrderEmailFn(context, { order }); // eslint-disable-line no-await-in-loop
     Object.assign(dataForEmail, someData);
   }
+  
+  dataForEmail.epay = order.payments[0].data;
 
   const language = await getLanguageForOrder(context, order);
 

@@ -328,6 +328,34 @@ type OrderItemAttribute {
   value: String
 }
 
+"Attribute of the gift"
+type Gift {
+  "The sender value"
+  sender: String
+
+  "The receiver value"
+  receiver: String
+  
+  "The message value"
+  message: String
+}
+"Attribute of the billing"
+type BillingOrder {
+  "The name of the customer"
+  customerName: String
+
+  "The nit value"
+  nit: String
+  
+  "The address value"
+  address: String
+
+  "check of the final consumer"
+  isCf: Boolean
+
+  "Id of the customer on Invoice system"
+  partnerId: Int
+}
 "A summary of the totals for this order"
 type OrderSummary {
   "The total of all discounts applied, as a positive number"
@@ -399,6 +427,11 @@ type OrderItem implements Node {
 
   "The product's slug"
   productSlug: String
+
+  "Product on the invoice system"
+  odooProduct: Int
+  "category on the invoice system"
+  categoryVariant: Int
 
   "The list of tags that have been applied to this product"
   productTags(
@@ -844,6 +877,12 @@ input PlaceOrderInput {
   method where the `amount` field is `null` will be charged the remainder due.
   """
   payments: [PaymentInput]
+  
+  "Json to billing"
+  billing: JSONObject
+
+  "Json to gift"
+  giftNote: JSONObject
 }
 
 "Input for the moveOrderItems mutation"
