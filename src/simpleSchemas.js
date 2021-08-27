@@ -265,6 +265,7 @@ export const Geolocation = new SimpleSchema({
     optional:true
   },
   "metaddress": {
+    type: Object,
     optional: true,
     blackbox: true
    }
