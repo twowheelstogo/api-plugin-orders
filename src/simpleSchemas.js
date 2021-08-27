@@ -263,7 +263,11 @@ export const Geolocation = new SimpleSchema({
     type:Geolocation,
     label:"geolocation",
     optional:true
-  }
+  },
+  "metaddress": {
+    optional: true,
+    blackbox: true
+   }
  });
 /**
  * @name ShippingParcel
