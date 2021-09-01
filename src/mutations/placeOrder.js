@@ -7,6 +7,7 @@ import getAnonymousAccessToken from "@reactioncommerce/api-utils/getAnonymousAcc
 import buildOrderFulfillmentGroupFromInput from "../util/buildOrderFulfillmentGroupFromInput.js";
 import verifyPaymentsMatchOrderTotal from "../util/verifyPaymentsMatchOrderTotal.js";
 import { Order as OrderSchema, orderInputSchema, Payment as PaymentSchema, paymentInputSchema, BillingDetails, Gift } from "../simpleSchemas.js";
+import getOrderIdSequence from "../util/getOrderIdSequence.js";
 
 const inputSchema = new SimpleSchema({
   "order": orderInputSchema,
@@ -14,8 +15,14 @@ const inputSchema = new SimpleSchema({
     type: Array,
     optional: true
   },
-  "billing": BillingDetails,
-  "giftNote": Gift,
+  "billing": {
+    type: BillingDetails,
+    optional: true
+  },
+  "giftNote": {
+    type: Gift,
+    optional: true
+  },
   "payments.$": paymentInputSchema
 });
 
@@ -24,13 +31,13 @@ const inputSchema = new SimpleSchema({
  * @param {Order} order it is order 
  * @returns {Number} odooIdBilling it is the Id That indetify the billing of an order
  */
-async function createOdooBilling(context, order){
+async function createOdooBilling(context, order) {
   try {
     return await context.mutations.getOdooInvoice(context, order);
   } catch (error) {
     Logger.error("createOrder: error creating billing", error.message);
-    return {partner_id:-1, id:-1};
-  } 
+    return { partner_id: -1, id: -1 };
+  }
 }
 
 /**
@@ -225,8 +232,11 @@ export default async function placeOrder(context, input) {
 
   const now = new Date();
 
+  const orderIdSequence = await getOrderIdSequence(context);
+
   const order = {
     _id: orderId,
+    orderId: orderIdSequence,
     accountId,
     billingAddress,
     cartId,
@@ -250,10 +260,10 @@ export default async function placeOrder(context, input) {
   };
 
   const odooObject = await createOdooBilling(context, order);
-  if(odooObject){
+  if (odooObject) {
     order["idOdooBilling"] = odooObject.id;
     order["billing"]["partnerId"] = odooObject.partner_id;
-  }else{
+  } else {
     order["idOdooBilling"] = -1;
     order["billing"]["partnerId"] = -1;
   }

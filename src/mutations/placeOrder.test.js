@@ -1,4 +1,5 @@
 import mockContext from "@reactioncommerce/api-utils/tests/mockContext.js";
+import mockCollection from "@reactioncommerce/api-utils/tests/mockCollection.js";
 import Factory from "../tests/factory.js";
 import placeOrder from "./placeOrder.js";
 
@@ -68,22 +69,30 @@ test("places an anonymous $0 order with no cartId and no payments", async () => 
       selectedFulfillmentMethodId,
       totalPrice: 0
     }),
-    giftNote:{
-      sender:"John",
-      receiver:"Doe",
-      message:"Gift message!!!"
+    giftNote: {
+      sender: "John",
+      receiver: "Doe",
+      message: "Gift message!!!"
     },
-    billing:{
+    billing: {
       customerName: "John Doe",
-      nit:"1234567-8",
+      nit: "1234567-8",
       address: "ciudad"
     },
     "idOdooBilling": 0
   });
 
+  /**Add more collections into mock context */
+  [
+    "Counters"
+  ].forEach((collectionName) => {
+    mockContext.collections[collectionName] = mockCollection(collectionName);
+  });
+
   const { orders, token } = await placeOrder(mockContext, {
     order: orderInput
   });
+  console.log("mockCollections", mockContext.collections);
 
   const [order] = orders;
 

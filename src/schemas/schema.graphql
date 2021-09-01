@@ -572,6 +572,9 @@ type Order implements Node {
   "The Order ID"
   _id: ID!
 
+  "The sequence of the order id"
+  orderId: Int
+
   "The account that placed the order. Some orders are created for anonymous users. Anonymous orders have a null account."
   account: Account
 
@@ -687,7 +690,9 @@ input OrderFulfillmentGroupItemInput {
   "The desired quantity of this item. This must be a positive integer."
   quantity: Int!
 }
-
+extend input OrderFulfillmentGroupItemInput {
+  metafields: [MetafieldInput]
+}
 "Information needed by the selected fulfillment method to properly fulfill the order"
 input OrderFulfillmentGroupDataInput {
   "The mailing address to which this fulfillment group should be shipped"
