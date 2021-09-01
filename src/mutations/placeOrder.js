@@ -190,7 +190,6 @@ export default async function placeOrder(context, input) {
   let orderTotal = 0;
   let shippingAddressForPayments = null;
   const finalFulfillmentGroups = await Promise.all(fulfillmentGroups.map(async (inputGroup) => {
-    console.log(inputGroup);
     const { group, groupSurcharges } = await buildOrderFulfillmentGroupFromInput(context, {
       accountId,
       billingAddress,
