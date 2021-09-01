@@ -10,6 +10,7 @@ import billingName from "./billingName.js";
 
 export default {
   _id: (node) => encodeOrderOpaqueId(node._id),
+  orderId: (node) => node.orderId,
   account: resolveAccountFromAccountId,
   billingName: (node) => billingName(node),
   cartId: (node) => encodeCartOpaqueId(node._id),

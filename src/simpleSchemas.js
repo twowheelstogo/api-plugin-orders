@@ -16,24 +16,24 @@ const withoutCodeCountries = ["AO", "AG", "AW", "BS", "BZ", "BJ", "BW",
  * @property {String} address optional
  * @property {Boolean} isCf optional
  */
- export const BillingDetails = new SimpleSchema({
+export const BillingDetails = new SimpleSchema({
   "name": {
-      type: String,
-      optional: true
+    type: String,
+    optional: true
   },
-  "nit":{
-      type: String,
-      optional: true
+  "nit": {
+    type: String,
+    optional: true
   },
-  "address":{
-      type: String,
-      optional:true
+  "address": {
+    type: String,
+    optional: true
   },
-  "isCf":{
+  "isCf": {
     type: Boolean,
     optional: true
   },
-  "partnerId":{
+  "partnerId": {
     type: Number,
     optional: true
   }
@@ -46,18 +46,18 @@ const withoutCodeCountries = ["AO", "AG", "AW", "BS", "BZ", "BJ", "BW",
  * @property {String} receiver optional
  * @property {String} message optional
  */
- export const Gift = new SimpleSchema({
+export const Gift = new SimpleSchema({
   sender: {
-      type: String,
-      optional:true
+    type: String,
+    optional: true
   },
   receiver: {
-      type: String,
-      optional:true
+    type: String,
+    optional: true
   },
   message: {
-      type: String,
-      optional:true
+    type: String,
+    optional: true
   }
 });
 /**
@@ -100,19 +100,19 @@ const Metafield = new SimpleSchema({
   }
 });
 const ImageSizes = new SimpleSchema({
-  "large":{
+  "large": {
     type: String
   },
-   "medium":{
+  "medium": {
     type: String
   },
-  "original":{
+  "original": {
     type: String
   },
-  "small":{
+  "small": {
     type: String
   },
-  "thumbnail":{
+  "thumbnail": {
     type: String
   },
 });
@@ -240,31 +240,31 @@ export const Geolocation = new SimpleSchema({
   "longitude": {
     type: Number
   }
- })
- export const CustomOrderAddress = new SimpleSchema({
+})
+export const CustomOrderAddress = new SimpleSchema({
   "_id": {
     type: String,
     optional: true
   },
-  "description":{
-    type:String,
+  "description": {
+    type: String,
     label: "Description"
   },
-  "reference":{
-    type:String,
-    label:"Reference",
-    optional:true
+  "reference": {
+    type: String,
+    label: "Reference",
+    optional: true
   },
-  "address":{
-    type:String,
-    label:"Address"
+  "address": {
+    type: String,
+    label: "Address"
   },
-  "geolocation":{
-    type:Geolocation,
-    label:"geolocation",
-    optional:true
+  "geolocation": {
+    type: Geolocation,
+    label: "geolocation",
+    optional: true
   }
- });
+});
 /**
  * @name ShippingParcel
  * @memberof Schemas
@@ -464,6 +464,15 @@ export const orderItemInputSchema = new SimpleSchema({
     type: Date,
     optional: true
   },
+  "metafields": {
+    type: Array,
+    optional: true
+  },
+  "metafields.$":{
+    type: Object,
+    blackbox: true,
+    optional: true
+  },
   "price": Number,
   "productConfiguration": Object,
   "productConfiguration.productId": String,
@@ -533,13 +542,13 @@ export const orderInputSchema = new SimpleSchema({
     optional: true
   },
   "shopId": String,
-  "billing":{
-    type:BillingDetails,
-    optional:true
+  "billing": {
+    type: BillingDetails,
+    optional: true
   },
-  "giftNote":{
-    type:Gift,
-    optional:true
+  "giftNote": {
+    type: Gift,
+    optional: true
   }
 });
 
@@ -814,8 +823,8 @@ export const OrderItem = new SimpleSchema({
   "history.$": {
     type: History
   },
-  "imageURLs":{
-    type:ImageSizes,
+  "imageURLs": {
+    type: ImageSizes,
     optional: true
   },
   "optionTitle": {
@@ -877,6 +886,15 @@ export const OrderItem = new SimpleSchema({
     type: Workflow,
     optional: true,
     defaultValue: {}
+  },
+  "metafields": {
+    type: Array,
+    optional: true
+  },
+  "metafields.$": {
+    type: Object,
+    blackbox: true,
+    optional: true
   }
 });
 
@@ -1141,6 +1159,10 @@ export const Order = new SimpleSchema({
     type: String,
     optional: true
   },
+  "orderId": {
+    type: Number,
+    optional: true
+  },
   "accountId": {
     type: String,
     optional: true
@@ -1238,22 +1260,22 @@ export const Order = new SimpleSchema({
     optional: true,
     defaultValue: {}
   },
-  "billing":{
+  "billing": {
     type: BillingDetails,
     optional: true,
     defaultValue: {
-      nit:"C/F",
-      name:"C/F",
-      address:"C/F",
+      nit: "C/F",
+      name: "C/F",
+      address: "C/F",
       isCf: true,
       partnerId: -1
     }
   },
-  "giftNote":{
-    type:Gift,
+  "giftNote": {
+    type: Gift,
     optional: true
   },
-  "idOdooBilling":{
+  "idOdooBilling": {
     type: Number,
     optional: true,
     defaultValue: 0

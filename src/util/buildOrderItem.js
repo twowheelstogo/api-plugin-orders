@@ -16,7 +16,8 @@ export default async function buildOrderItem(context, { currencyCode, inputItem,
     addedAt,
     price,
     productConfiguration,
-    quantity
+    quantity,
+    metafields
   } = inputItem;
   const { productId, productVariantId } = productConfiguration;
 
@@ -76,6 +77,7 @@ export default async function buildOrderItem(context, { currencyCode, inputItem,
       amount: finalPrice,
       currencyCode
     },
+    metafields,
     productId: chosenProduct.productId,
     productSlug: chosenProduct.slug,
     productType: chosenProduct.type,

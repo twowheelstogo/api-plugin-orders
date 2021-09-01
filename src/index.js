@@ -39,6 +39,9 @@ export default async function register(app) {
           [{ "payments.address.phone": 1 }],
           [{ "workflow.status": 1 }, { name: "c2_workflow.status" }]
         ]
+      },
+      Counters: {
+        name: "Counters"
       }
     },
     functionsByType: {
