@@ -36,6 +36,18 @@ export const BillingDetails = new SimpleSchema({
   "partnerId": {
     type: Number,
     optional: true
+  },
+  "country": {
+    type: String,
+    optional: true
+  },
+  "depto": {
+    type: String,
+    optional: true
+  },
+  "city": {
+    type: String,
+    optional: true
   }
 });
 /**
@@ -468,7 +480,7 @@ export const orderItemInputSchema = new SimpleSchema({
     type: Array,
     optional: true
   },
-  "metafields.$":{
+  "metafields.$": {
     type: Object,
     blackbox: true,
     optional: true
@@ -1267,6 +1279,9 @@ export const Order = new SimpleSchema({
       nit: "C/F",
       name: "C/F",
       address: "C/F",
+      country: "Guatemala",
+      depto: "Guatemala",
+      city: "Guatemala",
       isCf: true,
       partnerId: -1
     }
