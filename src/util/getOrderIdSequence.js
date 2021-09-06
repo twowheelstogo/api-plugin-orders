@@ -18,7 +18,6 @@ export default async function getOrderIdSequence(context) {
     });
 
     if (!updatedCounter) throw new ReactionError("server-error", "Error inesperado al crear contador");
-    console.log("counter", updatedCounter);
 
     return updatedCounter.seq_value;
 }
