@@ -557,6 +557,31 @@ export const orderFulfillmentGroupInputSchema = new SimpleSchema({
   }
 });
 
+/**
+ * @name NotesInput
+ * @memberof Schemas
+ * @type {SimpleSchema}
+ * @property {String} content required
+ * @property {String} userId required
+ * @property {Date} updatedAt required
+ */
+ const NotesInput = new SimpleSchema({
+  content: {
+    type: String
+  },
+  userId: {
+    type: String,
+    optional: true
+  },
+  updatedAt: {
+    type: Date
+  },
+  createdAt: {
+    type: Date,
+    optional: true
+  }
+});
+
 // Exported for unit tests
 export const orderInputSchema = new SimpleSchema({
   // Although billing address is typically needed only by the payment plugin,
@@ -600,7 +625,12 @@ export const orderInputSchema = new SimpleSchema({
   "giftNote": {
     type: Gift,
     optional: true
-  }
+  },
+  "notes": {
+    type: Array,
+    optional: true
+  },
+  "notes.$": NotesInput,
 });
 
 export const paymentInputSchema = new SimpleSchema({
@@ -767,6 +797,10 @@ const Notes = new SimpleSchema({
   },
   updatedAt: {
     type: Date
+  },
+  createdAt: {
+    type: Date,
+    optional: true
   }
 });
 

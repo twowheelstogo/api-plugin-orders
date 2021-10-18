@@ -146,7 +146,8 @@ export default async function placeOrder(context, input) {
     email,
     fulfillmentGroups,
     ordererPreferredLanguage,
-    shopId
+    shopId,
+    notes
   } = orderInput;
   const { accountId, appEvents, collections, getFunctionsOfType, userId } = context;
   const { Orders, Cart } = collections;
@@ -233,6 +234,8 @@ export default async function placeOrder(context, input) {
   const now = new Date();
 
   const orderIdSequence = await getOrderIdSequence(context);
+  
+  if(notes) notes[0].userId = accountId;
 
   const order = {
     _id: orderId,
@@ -244,6 +247,7 @@ export default async function placeOrder(context, input) {
     currencyCode,
     discounts,
     email,
+    notes,
     ordererPreferredLanguage: ordererPreferredLanguage || null,
     payments,
     shipping: finalFulfillmentGroups,
