@@ -179,7 +179,8 @@ export default async function placeOrder(context, input) {
     fulfillmentGroups,
     ordererPreferredLanguage,
     shopId,
-    notes
+    notes,
+    deliveryDate
   } = orderInput;
   const { accountId, appEvents, collections, getFunctionsOfType, userId } =
     context;
@@ -275,8 +276,8 @@ export default async function placeOrder(context, input) {
   const now = new Date();
 
   const orderIdSequence = await getOrderIdSequence(context);
-  
-  if(notes) notes[0].userId = accountId;
+
+  if (notes) notes[0].userId = accountId;
 
   const order = {
     _id: orderId,
@@ -305,9 +306,21 @@ export default async function placeOrder(context, input) {
     },
     billing,
     giftNote,
+    deliveryDate
   };
 
   const odooObject = await createOdooBilling(context, order);
+
+  // const odooObject = null;
+
+  if (deliveryDate) Object.assign(order, {
+    workflow: {
+      status: "scheduled",
+      workflow: ["scheduled"]
+    }
+  });
+
+  console.log("with bill");
   if (odooObject) {
     order["idOdooBilling"] = odooObject.id;
     order["billing"]["partnerId"] = odooObject.partner_id;

@@ -631,6 +631,10 @@ export const orderInputSchema = new SimpleSchema({
     optional: true
   },
   "notes.$": NotesInput,
+  "deliveryDate": {
+    type: Date,
+    optional: true
+  }
 });
 
 export const paymentInputSchema = new SimpleSchema({
@@ -1367,6 +1371,10 @@ export const Order = new SimpleSchema({
     type: Number,
     optional: true,
     defaultValue: 0
+  },
+  "deliveryDate": {
+    type: Date,
+    optional: true
   }
 });
 
