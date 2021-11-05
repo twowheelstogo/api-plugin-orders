@@ -29,10 +29,10 @@ export default async function buildOrderFulfillmentGroupFromInput(context, {
   cart
 }) {
   const { data, items, selectedFulfillmentMethodId, shopId, totalPrice: expectedGroupTotal, type } = inputGroup;
-
   const group = {
     _id: Random.id(),
     address: data ? data.shippingAddress : null,
+    pickupDetails: data ? data.pickupDetails : null,
     shopId,
     type,
     workflow: { status: "new", workflow: ["new"] }
