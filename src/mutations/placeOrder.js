@@ -70,6 +70,7 @@ async function createPayments({
   paymentsInput,
   shippingAddress,
   shop,
+  orderIdSequence
 }) {
   // Determining which payment methods are enabled for the shop
   const availablePaymentMethods = shop.availablePaymentMethods || [];
@@ -114,6 +115,7 @@ async function createPayments({
     const payment = await paymentMethodConfig.functions.createAuthorizedPayment(
       context,
       {
+        orderIdSequence,
         accountId, // optional
         amount,
         billingAddress: paymentInput.billingAddress || billingAddress,
@@ -180,7 +182,7 @@ export default async function placeOrder(context, input) {
     ordererPreferredLanguage,
     shopId,
     notes,
-    deliveryDate
+    deliveryDate,
   } = orderInput;
   const { accountId, appEvents, collections, getFunctionsOfType, userId } =
     context;
@@ -257,7 +259,7 @@ export default async function placeOrder(context, input) {
       return group;
     })
   );
-
+  const orderIdSequence = await getOrderIdSequence(context);
   const payments = await createPayments({
     accountId,
     billingAddress,
@@ -268,14 +270,13 @@ export default async function placeOrder(context, input) {
     paymentsInput,
     shippingAddress: shippingAddressForPayments,
     shop,
+    orderIdSequence,
   });
 
   // Create anonymousAccessToken if no account ID
   const fullToken = accountId ? null : getAnonymousAccessToken();
 
   const now = new Date();
-
-  const orderIdSequence = await getOrderIdSequence(context);
 
   if (notes) notes[0].userId = accountId;
 
@@ -306,19 +307,20 @@ export default async function placeOrder(context, input) {
     },
     billing,
     giftNote,
-    deliveryDate
+    deliveryDate,
   };
 
   const odooObject = await createOdooBilling(context, order);
 
   // const odooObject = null;
 
-  if (deliveryDate) Object.assign(order, {
-    workflow: {
-      status: "scheduled",
-      workflow: ["scheduled"]
-    }
-  });
+  if (deliveryDate)
+    Object.assign(order, {
+      workflow: {
+        status: "scheduled",
+        workflow: ["scheduled"],
+      },
+    });
 
   console.log("with bill");
   if (odooObject) {
