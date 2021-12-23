@@ -70,8 +70,9 @@ async function createPayments({
   paymentsInput,
   shippingAddress,
   shop,
-  orderIdSequence
+  orderIdSequence,
 }) {
+  console.log("creando payment con orderId", orderIdSequence);
   // Determining which payment methods are enabled for the shop
   const availablePaymentMethods = shop.availablePaymentMethods || [];
 
@@ -110,7 +111,7 @@ async function createPayments({
         `Invalid payment method name: ${methodName}`
       );
     }
-
+    console.log("entrando con orderId", orderIdSequence);
     // Authorize this payment
     const payment = await paymentMethodConfig.functions.createAuthorizedPayment(
       context,
@@ -128,7 +129,7 @@ async function createPayments({
         }, // optional, object, blackbox
       }
     );
-
+    console.log("saliendo payment con orderId", orderIdSequence);
     const paymentWithCurrency = {
       ...payment,
       // This is from previous support for exchange rates, which was removed in v3.0.0
