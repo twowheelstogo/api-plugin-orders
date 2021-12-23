@@ -12,25 +12,38 @@ import {
   Payment as PaymentSchema,
   paymentInputSchema,
   BillingDetails,
-  Gift,
+  Gift
 } from "../simpleSchemas.js";
 import getOrderIdSequence from "../util/getOrderIdSequence.js";
+import { Mutex } from "async-mutex";
+const mutexList = [];
+const mutexControl = new Mutex();
+
+const searchMutex = async (mutexId) => {
+  mutexControl.
+  const _mutex = mutexList.find((mutex) => mutex.id === mutexId);
+  if(_mutex){
+
+  }else{
+    const new Mutex();
+  }
+};
 
 const inputSchema = new SimpleSchema({
   order: orderInputSchema,
   payments: {
     type: Array,
-    optional: true,
+    optional: true
   },
   billing: {
     type: BillingDetails,
-    optional: true,
+    optional: true
   },
   giftNote: {
     type: Gift,
-    optional: true,
+    optional: true
   },
-  "payments.$": paymentInputSchema,
+  "payments.$": paymentInputSchema
 });
 
 /**
@@ -69,7 +82,7 @@ async function createPayments({
   orderTotal,
   paymentsInput,
   shippingAddress,
-  shop,
+  shop
 }) {
   // Determining which payment methods are enabled for the shop
   const availablePaymentMethods = shop.availablePaymentMethods || [];
@@ -100,8 +113,9 @@ async function createPayments({
     // Grab config for this payment method
     let paymentMethodConfig;
     try {
-      paymentMethodConfig =
-        context.queries.getPaymentMethodConfigByName(methodName);
+      paymentMethodConfig = context.queries.getPaymentMethodConfigByName(
+        methodName
+      );
     } catch (error) {
       Logger.error(error);
       throw new ReactionError(
@@ -122,8 +136,8 @@ async function createPayments({
         shippingAddress, // optional, for fraud detection, the first shipping address if shipping to multiple
         shopId: shop._id,
         paymentData: {
-          ...(paymentInput.data || {}),
-        }, // optional, object, blackbox
+          ...(paymentInput.data || {})
+        } // optional, object, blackbox
       }
     );
 
@@ -131,7 +145,7 @@ async function createPayments({
       ...payment,
       // This is from previous support for exchange rates, which was removed in v3.0.0
       currency: { exchangeRate: 1, userCurrency: currencyCode },
-      currencyCode,
+      currencyCode
     };
 
     PaymentSchema.validate(paymentWithCurrency);
@@ -168,7 +182,7 @@ export default async function placeOrder(context, input) {
     order: orderInput,
     payments: paymentsInput,
     billing,
-    giftNote,
+    giftNote
   } = cleanedInput;
   const {
     billingAddress,
@@ -178,10 +192,15 @@ export default async function placeOrder(context, input) {
     email,
     fulfillmentGroups,
     ordererPreferredLanguage,
-    shopId,
+    shopId
   } = orderInput;
-  const { accountId, appEvents, collections, getFunctionsOfType, userId } =
-    context;
+  const {
+    accountId,
+    appEvents,
+    collections,
+    getFunctionsOfType,
+    userId
+  } = context;
   const { Orders, Cart } = collections;
 
   const shop = await context.queries.shopById(context, shopId);
@@ -228,17 +247,19 @@ export default async function placeOrder(context, input) {
   let shippingAddressForPayments = null;
   const finalFulfillmentGroups = await Promise.all(
     fulfillmentGroups.map(async (inputGroup) => {
-      const { group, groupSurcharges } =
-        await buildOrderFulfillmentGroupFromInput(context, {
-          accountId,
-          billingAddress,
-          cartId,
-          currencyCode,
-          discountTotal,
-          inputGroup,
-          orderId,
-          cart,
-        });
+      const {
+        group,
+        groupSurcharges
+      } = await buildOrderFulfillmentGroupFromInput(context, {
+        accountId,
+        billingAddress,
+        cartId,
+        currencyCode,
+        discountTotal,
+        inputGroup,
+        orderId,
+        cart
+      });
 
       // We save off the first shipping address found, for passing to payment services. They use this
       // for fraud detection.
@@ -255,7 +276,7 @@ export default async function placeOrder(context, input) {
       return group;
     })
   );
-
+  const orderIdSequence = await getOrderIdSequence(context);
   const payments = await createPayments({
     accountId,
     billingAddress,
@@ -266,6 +287,7 @@ export default async function placeOrder(context, input) {
     paymentsInput,
     shippingAddress: shippingAddressForPayments,
     shop,
+    orderIdSequence
   });
 
   // Create anonymousAccessToken if no account ID
@@ -273,7 +295,6 @@ export default async function placeOrder(context, input) {
 
   const now = new Date();
 
-  const orderIdSequence = await getOrderIdSequence(context);
 
   const order = {
     _id: orderId,
@@ -297,10 +318,10 @@ export default async function placeOrder(context, input) {
     updatedAt: now,
     workflow: {
       status: "new",
-      workflow: ["new"],
+      workflow: ["new"]
     },
     billing,
-    giftNote,
+    giftNote
   };
 
   const odooObject = await createOdooBilling(context, order);
@@ -361,7 +382,7 @@ export default async function placeOrder(context, input) {
       customFields = await transformCustomOrderFieldsFunc({
         context,
         customFields,
-        order,
+        order
       }); // eslint-disable-line no-await-in-loop
     }
     order.customFields = customFields;
@@ -377,6 +398,6 @@ export default async function placeOrder(context, input) {
   return {
     orders: [order],
     // GraphQL response gets the raw token
-    token: fullToken && fullToken.token,
+    token: fullToken && fullToken.token
   };
 }
