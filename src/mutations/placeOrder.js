@@ -309,25 +309,25 @@ export default async function placeOrder(context, input) {
     deliveryDate
   };
 
-  const odooObject = await createOdooBilling(context, order);
+  // const odooObject = await createOdooBilling(context, order);
 
-  // const odooObject = null;
+  // // const odooObject = null;
 
-  if (deliveryDate) Object.assign(order, {
-    workflow: {
-      status: "scheduled",
-      workflow: ["scheduled"]
-    }
-  });
+  // if (deliveryDate) Object.assign(order, {
+  //   workflow: {
+  //     status: "scheduled",
+  //     workflow: ["scheduled"]
+  //   }
+  // });
 
-  console.log("with bill");
-  if (odooObject) {
-    order["idOdooBilling"] = odooObject.id;
-    order["billing"]["partnerId"] = odooObject.partner_id;
-  } else {
-    order["idOdooBilling"] = -1;
-    order["billing"]["partnerId"] = -1;
-  }
+  // console.log("with bill");
+  // if (odooObject) {
+  //   order["idOdooBilling"] = odooObject.id;
+  //   order["billing"]["partnerId"] = odooObject.partner_id;
+  // } else {
+  //   order["idOdooBilling"] = -1;
+  //   order["billing"]["partnerId"] = -1;
+  // }
   if (fullToken) {
     const dbToken = { ...fullToken };
     // don't store the raw token in db, only the hash
