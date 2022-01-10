@@ -255,11 +255,22 @@ export const Geolocation = new SimpleSchema({
  })
  export const DistanceMeta = new SimpleSchema({
   "value": {
-    type: Number
+    type: Number,
+    optional: true
   },
   "text": {
-    type: String
-  }
+    type: String,
+    optional: true
+  },
+  "branch":{
+    type: String,
+    optional: true
+  },
+  "branchId":{
+    type: String,
+    optional: true
+  },
+
 })
 
 export const Metaddress = new SimpleSchema({
