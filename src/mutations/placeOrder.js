@@ -69,8 +69,9 @@ async function createPayments({
   orderTotal,
   paymentsInput,
   shippingAddress,
-  shop,
+  shop
 }) {
+
   // Determining which payment methods are enabled for the shop
   const availablePaymentMethods = shop.availablePaymentMethods || [];
 
@@ -215,6 +216,7 @@ export default async function placeOrder(context, input) {
       cart
     );
     ({ discounts } = discountsResult);
+
     discountTotal = discountsResult.total;
   }
 
@@ -268,6 +270,7 @@ export default async function placeOrder(context, input) {
     paymentsInput,
     shippingAddress: shippingAddressForPayments,
     shop,
+    discountTotal
   });
 
   // Create anonymousAccessToken if no account ID
