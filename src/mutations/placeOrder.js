@@ -269,8 +269,7 @@ export default async function placeOrder(context, input) {
     orderTotal,
     paymentsInput,
     shippingAddress: shippingAddressForPayments,
-    shop,
-    discountTotal
+    shop
   });
 
   // Create anonymousAccessToken if no account ID
