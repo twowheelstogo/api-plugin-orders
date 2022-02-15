@@ -252,8 +252,8 @@ export const Geolocation = new SimpleSchema({
   "longitude": {
     type: Number
   }
- })
- export const DistanceMeta = new SimpleSchema({
+})
+export const DistanceMeta = new SimpleSchema({
   "value": {
     type: Number,
     optional: true
@@ -262,11 +262,11 @@ export const Geolocation = new SimpleSchema({
     type: String,
     optional: true
   },
-  "branch":{
+  "branch": {
     type: String,
     optional: true
   },
-  "branchId":{
+  "branchId": {
     type: String,
     optional: true
   },
@@ -274,32 +274,32 @@ export const Geolocation = new SimpleSchema({
 })
 
 export const Metaddress = new SimpleSchema({
-  "administrative_area_level_1":{
+  "administrative_area_level_1": {
     type: String,
     optional: true
   },
-  "administrative_area_level_2":{
+  "administrative_area_level_2": {
     type: String,
     optional: true
   },
-  "neighborhood":{
+  "neighborhood": {
     type: String,
     optional: true
   },
-  "street_address":{
+  "street_address": {
     type: String,
     optional: true
   },
-  "sublocality":{
+  "sublocality": {
     type: String,
     optional: true
   },
-  "distance":{
+  "distance": {
     type: DistanceMeta,
     optional: true
   }
 })
- export const CustomOrderAddress = new SimpleSchema({
+export const CustomOrderAddress = new SimpleSchema({
   "_id": {
     type: String,
     optional: true
@@ -317,20 +317,22 @@ export const Metaddress = new SimpleSchema({
     type: String,
     label: "Address"
   },
-  "geolocation":{
-    type:Geolocation,
-    label:"geolocation",
-    optional:true
+  "geolocation": {
+    type: Geolocation,
+    label: "geolocation",
+    optional: true
   },
   "metaddress": {
     type: Metaddress,
     optional: true
   },
   "receiver": {
-    type: String
+    type: String,
+    optional: true
   },
   "phone": {
-    type: String
+    type: String,
+    optional: true
   }
 });
 /**
@@ -582,7 +584,7 @@ export const orderFulfillmentGroupInputSchema = new SimpleSchema({
  * @property {String} userId required
  * @property {Date} updatedAt required
  */
- const NotesInput = new SimpleSchema({
+const NotesInput = new SimpleSchema({
   content: {
     type: String
   },

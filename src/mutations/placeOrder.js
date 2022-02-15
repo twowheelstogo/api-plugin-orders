@@ -311,9 +311,9 @@ export default async function placeOrder(context, input) {
     deliveryDate
   };
 
-  const odooObject = await createOdooBilling(context, order);
+  // const odooObject = await createOdooBilling(context, order);
 
-  // const odooObject = null;
+  const odooObject = null;
 
   if (deliveryDate) Object.assign(order, {
     workflow: {
