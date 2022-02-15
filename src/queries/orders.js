@@ -83,7 +83,8 @@ export default async function orders(context, { filters, shopIds } = {}) {
         // Exact matches
         { _id: searchField }, // exact match the order id
         { referenceId: searchField }, // exact match the reference id
-        { email: searchField }, // exact match the email
+        { email: regexMatch },
+        { orderId: regexMatch}, // exact match the email
 
         // Regex match names as they include the whole name in one field
         { "payments.address.fullName": regexMatch },
