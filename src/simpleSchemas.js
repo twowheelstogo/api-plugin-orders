@@ -325,6 +325,12 @@ export const Metaddress = new SimpleSchema({
   "metaddress": {
     type: Metaddress,
     optional: true
+  },
+  "receiver": {
+    type: String
+  },
+  "phone": {
+    type: String
   }
 });
 /**
